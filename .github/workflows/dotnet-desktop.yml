@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
+        platform: [Any CPU]
 
     runs-on: windows-latest 
 
@@ -38,7 +39,7 @@ jobs:
 
     # Build the solution
     - name: Build
-      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
+      run: msbuild $env:Solution_Name /p:Configuration=${{ matrix.configuration }} /p:Platform="${{ matrix.platform }}"
 
     # Execute all unit tests in the solution (if any)
     - name: Execute unit tests
