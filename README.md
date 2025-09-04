@@ -1,4 +1,4 @@
-﻿# TODO Application - UI Improvements
+﻿# TODO Application
 
 A modern, visually enhanced TODO application built with Windows Forms and .NET 8.
 
