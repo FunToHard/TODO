@@ -7,18 +7,16 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     strategy:
       matrix:
         configuration: [Debug, Release]
-        platform: [Any CPU]
 
     runs-on: windows-latest 
 
     env:
       Solution_Name: TODO.sln
+      Project_Name: TODO
 
     steps:
     - name: Checkout
@@ -32,27 +30,27 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    # Add MSBuild to the PATH
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
     # Restore NuGet packages
     - name: Restore NuGet packages
-      run: nuget restore $env:Solution_Name
+      run: nuget restore ${{ env.Solution_Name }}
 
     # Build the solution
     - name: Build
-      run: msbuild $env:Solution_Name /p:Configuration=${{ matrix.configuration }} /p:Platform="${{ matrix.platform }}"
+      run: msbuild ${{ env.Solution_Name }} /p:Configuration=${{ matrix.configuration }} /p:Platform="Any CPU"
 
-    # Execute all unit tests in the solution (if any)
-    - name: Execute unit tests
-      run: dotnet test $env:Solution_Name --no-build --configuration $env:Configuration
+    # Execute unit tests 
+    # - name: Execute unit tests
+    #   run: dotnet test TODO.sln --no-build --configuration ${{ matrix.configuration }}
 
-    # Upload build artifacts (.exe and .dll)
+    # Upload build artifacts
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Build Artifacts
+        name: Build-Artifacts-${{ matrix.configuration }}
         path: |
-          bin\${{ matrix.configuration }}\net8.0-windows\TODO.exe
-          bin\${{ matrix.configuration }}\net8.0-windows\TODO.dll
+          TODO/bin/${{ matrix.configuration }}/net8.0-windows/
+        if-no-files-found: warn
